@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pasang Iklan</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; max-width: 400px; margin: auto; }
+    label { display: block; margin-top: 15px; }
+    select, input[type="text"], input[type="tel"] {
+      width: 100%; padding: 8px; margin-top: 5px; box-sizing: border-box;
+    }
+    button {
+      margin-top: 20px; padding: 12px; width: 100%; background-color: #25D366; 
+      border: none; color: white; font-size: 16px; cursor: pointer; border-radius: 5px;
+    }
+    button:hover { background-color: #1ebe57; }
+  </style>
+</head>
+<body>
+
+  <h2>Form Order Iklan Safelink</h2>
+
+  <form id="orderForm">
+    <label for="name">Nama:</label>
+    <input type="text" id="name" name="name" placeholder="Masukkan nama Anda" required />
+    
+    <label for="waNumber">Nomor WhatsApp:</label>
+    <input type="tel" id="waNumber" name="waNumber" placeholder="Contoh: 08123456789" pattern="[0-9]{10,15}" required />
+    
+    <label for="ratio">Rasio Gambar Ukuran Iklan:</label>
+    <select id="ratio" name="ratio" required>
+      <option value="" disabled selected>Pilih Rasio</option>
+      <option value="1:1">1:1</option>
+      <option value="4:5">4:5</option>
+      <option value="16:9">16:9</option>
+    </select>
+    
+    <label for="duration">Durasi Tayang:</label>
+    <select id="duration" name="duration" required>
+      <option value="" disabled selected>Pilih Durasi</option>
+      <option value="14Hari">14 Hari</option>
+      <option value="1Bulan">1 Bulan</option>
+      <option value="3Bulan">3 Bulan</option>
+    </select>
+    
+    <label for="serviceFee">Biaya Layanan:</label>
+    <select id="serviceFee" name="serviceFee" required>
+      <option value="" disabled selected>Pilih Biaya</option>
+    </select>
+
+    <button type="submit">Pesan Sekarang</button>
+  </form>
+
+  <script>
+    // Tarif Biaya per Rasio dan Durasi (contoh saja, bisa disesuaikan)
+    const priceTable = {
+      "1:1": { "14Hari": 35000, "1Bulan": 50000, "3Bulan": 135000 },
+      "4:5": { "14Hari": 50000, "1Bulan": 75000, "3Bulan": 200000 },
+      "16:9": { "14Hari": 25000, "1Bulan": 120000, "3Bulan": 330000 }
+    };
+
+    const ratioSelect = document.getElementById('ratio');
+    const durationSelect = document.getElementById('duration');
+    const serviceFeeSelect = document.getElementById('serviceFee');
+
+    function updateServiceFee() {
+      const ratio = ratioSelect.value;
+      const duration = durationSelect.value;
+      serviceFeeSelect.innerHTML = '<option value="" disabled selected>Pilih Biaya</option>';
+      if(ratio && duration) {
+        const fee = priceTable[ratio][duration];
+        // Tampilkan dalam format Rp
+        const feeFormatted = fee.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' });
+        serviceFeeSelect.innerHTML = `<option value="${fee}">${feeFormatted}</option>`;
+      }
+    }
+
+    ratioSelect.addEventListener('change', updateServiceFee);
+    durationSelect.addEventListener('change', updateServiceFee);
+
+    document.getElementById('orderForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const name = document.getElementById('name').value.trim();
+      const waNumber = document.getElementById('waNumber').value.trim();
+      const ratio = ratioSelect.value;
+      const duration = durationSelect.value;
+      const fee = serviceFeeSelect.value;
+
+      if (!name || !waNumber || !ratio || !duration || !fee) {
+        alert('Mohon lengkapi semua data!');
+        return;
+      }
+
+      const message = `Halo, saya ingin memesan iklan Safelink dengan detail berikut:%0A` +
+                      `Nama: ${name}%0A` +
+                      `Nomor WA: ${waNumber}%0A` +
+                      `Rasio Gambar: ${ratio}%0A` +
+                      `Durasi Tayang: ${duration}%0A` +
+                      `Biaya Layanan: Rp${parseInt(fee).toLocaleString('id-ID')}`;
+
+      const waLink = `https://wa.me/6283190554763?text=${message}`;
+      window.open(waLink, '_blank');
+    });
+  </script>
+
+</body>
+</html>
