@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <title>Voucher Maxim | @bayu.rifa</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #ff8600;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        .voucher-container {
+            background-color: #bfbfbf;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 360px;
+            padding: 20px 16px 26px 16px;
+            box-sizing: border-box;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+            position: relative;
+        }
+        .voucher-title {
+            position: absolute;
+            top: 15px;
+            left: 16px;
+            font-size: 22px;
+            font-weight: bold;
+            color: white;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            transform: rotate(-8deg);
+            user-select: none;
+            white-space: nowrap;
+        }
+        .code-section {
+            margin-top: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: nowrap;
+        }
+        .voucher-code {
+            background-color: black;
+            color: white;
+            padding: 10px 14px;
+            font-size: 20px;
+            border-radius: 6px;
+            letter-spacing: 2px;
+            font-weight: 600;
+            user-select: all;
+            font-family: monospace;
+            white-space: nowrap;
+        }
+        .copy-btn {
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            width: 28px;
+            height: 28px;
+            outline: none;
+            flex-shrink: 0;
+        }
+        .copy-btn img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        .copy-btn:active {
+            opacity: 0.6;
+        }
+        .info-text {
+            margin-top: 18px;
+            font-size: 15px;
+            color: black;
+            text-align: center;
+            line-height: 1.4;
+            user-select: none;
+            padding: 0 6px;
+        }
+        .author {
+            margin-top: 16px;
+            font-size: 13px;
+            text-align: center;
+            color: black;
+            user-select: none;
+        }
+        .author a {
+            color: black;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .author a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive tweaks for smaller devices */
+        @media (max-width: 320px) {
+            .voucher-title {
+                font-size: 18px;
+                top: 12px;
+                left: 12px;
+            }
+            .voucher-code {
+                font-size: 18px;
+                padding: 8px 10px;
+            }
+            .copy-btn {
+                width: 24px;
+                height: 24px;
+            }
+            .info-text {
+                font-size: 14px;
+                margin-top: 14px;
+            }
+            .author {
+                font-size: 12px;
+                margin-top: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="voucher-container">
+        <div class="voucher-title">Maxim</div>
+        <div class="code-section">
+            <code class="voucher-code" id="voucher-code">DAMKAR17</code>
+            <button class="copy-btn" onclick="copyCode()" aria-label="Copy voucher code" title="Salin kode voucher">
+                <img src="https://img.icons8.com/ios-glyphs/30/000000/copy.png" alt="Copy icon" />
+            </button>
+        </div>
+        <p class="info-text">
+            Nikmatin Promo Kemerdekaan dari Maxim, Diskon <strong>17%</strong> dengan menggunakan kode Promo di atas.
+        </p>
+        <p class="author">
+            Diposting oleh: <a href="https://instagram.com/bayu.rifa" target="_blank" rel="noopener">@bayu.rifa</a>
+        </p>
+    </div>
+
+    <script>
+        function copyCode() {
+            const codeEle = document.getElementById('voucher-code');
+            const codeText = codeEle.innerText;
+
+            navigator.clipboard.writeText(codeText).then(() => {
+                alert('Kode voucher berhasil disalin!');
+            }).catch(() => {
+                alert('Gagal menyalin kode voucher. Silakan salin secara manual.');
+            });
+        }
+    </script>
+</body>
+</html>
