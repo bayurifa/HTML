@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Prompt Generator Widget by @bayu.rifa</title>
+  <style>
+    :root {
+      --main-color: #e53935; /* merah utama */
+      --bg-color: #fff0f0;
+      --btn-hover: #b71c1c;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      background-color: var(--bg-color);
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      margin: 0;
+      box-sizing: border-box;
+    }
+    .widget-prompt {
+      background: white;
+      border: 2px solid var(--main-color);
+      border-radius: 10px;
+      padding: 20px 24px;
+      box-shadow: 0 4px 10px rgba(229, 57, 53, 0.3);
+      width: 100%;
+      max-width: 450px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      box-sizing: border-box;
+    }
+    textarea {
+      width: 100%;
+      height: 140px;
+      border: 2px solid var(--main-color);
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 16px;
+      resize: vertical;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      transition: border-color 0.3s;
+      box-sizing: border-box;
+    }
+    textarea:focus {
+      outline: none;
+      border-color: var(--btn-hover);
+      box-shadow: 0 0 5px var(--btn-hover);
+    }
+    input[type="text"] {
+      width: 100%;
+      border: 2px solid var(--main-color);
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 15px;
+      box-sizing: border-box;
+      transition: border-color 0.3s;
+    }
+    input[type="text"]:focus {
+      outline: none;
+      border-color: var(--btn-hover);
+      box-shadow: 0 0 5px var(--btn-hover);
+    }
+    .labels {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .label-ai, .label-tools {
+      border: 1.5px solid var(--main-color);
+      padding: 6px 12px;
+      border-radius: 20px;
+      color: var(--main-color);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      user-select: none;
+      flex: 1 1 auto;
+      min-width: 140px;
+      box-sizing: border-box;
+    }
+    .label-tools a {
+      color: var(--main-color);
+      text-decoration: underline;
+      font-style: italic;
+    }
+    .submit-btn, .copy-btn {
+      background-color: var(--main-color);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.25s;
+      width: 100%;
+      user-select: none;
+      box-sizing: border-box;
+    }
+    .submit-btn:hover, .copy-btn:hover {
+      background-color: var(--btn-hover);
+    }
+    .copy-confirmation {
+      color: var(--main-color);
+      font-size: 14px;
+      opacity: 0;
+      transition: opacity 0.3s;
+      height: 20px;
+      text-align: center;
+      user-select: none;
+    }
+    .copy-confirmation.visible {
+      opacity: 1;
+    }
+    .result-box {
+      background: #ffe5e5;
+      color: var(--main-color);
+      padding: 12px 16px;
+      border-radius: 8px;
+      white-space: pre-wrap;
+      font-family: monospace, monospace;
+      border: 1.5px solid var(--main-color);
+      margin-top: 10px;
+      user-select: all;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 480px) {
+      .widget-prompt {
+        padding: 16px 18px;
+        box-shadow: none;
+        border-width: 1.5px;
+        max-width: 100%;
+      }
+      textarea {
+        height: 100px;
+        font-size: 14px;
+        padding: 10px;
+      }
+      input[type="text"] {
+        font-size: 14px;
+        padding: 8px 10px;
+      }
+      .label-ai, .label-tools {
+        min-width: 120px;
+        padding: 5px 10px;
+        font-size: 14px;
+      }
+      .submit-btn, .copy-btn {
+        font-size: 14px;
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="widget-prompt">
+    <textarea id="promptTextarea" placeholder="Isi prompt AI di sini..."></textarea>
+    <input type="text" id="labelAI" placeholder="Rekomendasi AI yang digunakan" />
+    <input type="text" id="toolsInput" placeholder="Tools tambahan (isi nama, opsional)" />
+    <input type="text" id="toolsHref" placeholder="URL tools tambahan (jika ada)" />
+    <button class="submit-btn" id="submitBtn">Submit</button>
+    <button class="copy-btn" id="copyBtn" style="display:none;">Salin Prompt</button>
+    <div class="copy-confirmation" id="copyConfirmation">Prompt berhasil disalin!</div>
+    <div id="resultContainer"></div>
+  </div>
+
+  <script>
+    const submitBtn = document.getElementById('submitBtn');
+    const copyBtn = document.getElementById('copyBtn');
+    const promptTextarea = document.getElementById('promptTextarea');
+    const labelAI = document.getElementById('labelAI');
+    const toolsInput = document.getElementById('toolsInput');
+    const toolsHref = document.getElementById('toolsHref');
+    const resultContainer = document.getElementById('resultContainer');
+    const copyConfirmation = document.getElementById('copyConfirmation');
+
+    submitBtn.addEventListener('click', () => {
+      const prompt = promptTextarea.value.trim();
+      const label = labelAI.value.trim();
+      const toolName = toolsInput.value.trim();
+      const toolLink = toolsHref.value.trim();
+
+      if (!prompt) {
+        alert('Prompt harus diisi!');
+        return;
+      }
+      if (!label) {
+        alert('Label AI harus diisi!');
+        return;
+      }
+
+      // Membuat elemen a jika url terisi, atau teks biasa jika kosong
+      let toolHtml = toolName;
+      if (toolName && toolLink) {
+        toolHtml = `<a href="${toolLink}" target="_blank" rel="noopener noreferrer">${toolName}</a>`;
+      } else if (!toolName) {
+        // Jika tools kosong, tampilkan tanda strip atau teks kosong
+        toolHtml = '-';
+      }
+
+      // Format hasil sesuai yang disetting
+      const formattedResult = 
+`<div class="widget-prompt">
+  <textarea id="promptTextarea" >${prompt}</textarea>
+  <button class="copy-btn" id="copyBtnInner">Salin Prompt</button>
+  <div class="copy-confirmation" id="copyConfirmationInner">Prompt berhasil disalin!</div>
+  <div class="labels">
+    <div class="label-ai">${label}</div>
+    <div class="label-tools">Tools: ${toolHtml}</div>
+  </div>
+</div>`;
+
+      // Tampilkan hasil di container
+      resultContainer.innerHTML = formattedResult;
+      copyBtn.style.display = 'block';
+
+      // Event listener button copy untuk hasil baru
+      const copyBtnInner = document.getElementById('copyBtnInner');
+      const promptTextareaInner = document.querySelector('#resultContainer textarea');
+      const copyConfirmationInner = document.getElementById('copyConfirmationInner');
+
+      copyBtnInner.addEventListener('click', () => {
+        const text = promptTextareaInner.value.trim();
+        if (!text) {
+          alert('Prompt belum diisi!');
+          return;
+        }
+        navigator.clipboard.writeText(text)
+          .then(() => {
+            copyConfirmationInner.classList.add('visible');
+            setTimeout(() => {
+              copyConfirmationInner.classList.remove('visible');
+            }, 2000);
+          })
+          .catch(() => {
+            alert('Gagal menyalin prompt.');
+          });
+      });
+    });
+
+    // Copy tombol utama (untuk hasil kosong)
+    copyBtn.addEventListener('click', () => {
+      const text = promptTextarea.value.trim();
+      if (!text) {
+        alert('Prompt belum diisi!');
+        return;
+      }
+      navigator.clipboard.writeText(text)
+        .then(() => {
+          copyConfirmation.classList.add('visible');
+          setTimeout(() => {
+            copyConfirmation.classList.remove('visible');
+          }, 2000);
+        })
+        .catch(() => {
+          alert('Gagal menyalin prompt.');
+        });
+    });
+  </script>
+</body>
+</html>
