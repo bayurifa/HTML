@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Create Code</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #fff;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  .code-generator-widget {
+    background: linear-gradient(45deg, #833AB4, #FD1D1D, #fcb045);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(131, 58, 180, 0.4);
+    width: 90%;
+    max-width: 400px;
+    box-sizing: border-box;
+    color: white;
+    text-align: center;
+  }
+  .code-generator-widget h2 {
+    margin-bottom: 1.5rem;
+    font-weight: bold;
+  }
+  .code-generator-widget input[type="text"],
+  .code-generator-widget input[type="url"] {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    border: none;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    box-sizing: border-box;
+  }
+  .code-generator-widget button {
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.85);
+    border: none;
+    padding: 0.75rem;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    color: #833AB4;
+    margin-bottom: 1rem;
+  }
+  .code-generator-widget button:hover {
+    background-color: rgba(255, 255, 255, 1);
+  }
+  .output-code {
+    background-color: rgba(255,255,255,0.2);
+    border-radius: 8px;
+    padding: 1rem;
+    font-family: monospace;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    margin-bottom: 1rem;
+    min-height: 60px;
+  }
+
+  @media (max-width: 480px) {
+    .code-generator-widget {
+      padding: 1.5rem;
+    }
+    .code-generator-widget h2 {
+      font-size: 1.3rem;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="code-generator-widget">
+  <h2>Code Generator</h2>
+  <input type="text" id="codeInput" placeholder="Masukkan Kode" />
+  <input type="url" id="urlInput" placeholder="Masukkan URL Tujuan" />
+  <button id="generateBtn">Generate Code</button>
+  <div id="outputCode" class="output-code" aria-live="polite"></div>
+  <button id="requestBtn" disabled>Request Code via WhatsApp</button>
+</div>
+
+<script>
+  const codeInput = document.getElementById('codeInput');
+  const urlInput = document.getElementById('urlInput');
+  const generateBtn = document.getElementById('generateBtn');
+  const requestBtn = document.getElementById('requestBtn');
+  const outputCode = document.getElementById('outputCode');
+
+  let generatedCodeString = '';
+
+  generateBtn.addEventListener('click', () => {
+    const code = codeInput.value.trim();
+    const url = urlInput.value.trim();
+
+    if (!code || !url) {
+      outputCode.textContent = 'Kode dan URL harus diisi!';
+      requestBtn.disabled = true;
+      return;
+    }
+    // Validasi dasar URL
+    try {
+      new URL(url);
+    } catch (e) {
+      outputCode.textContent = 'URL tidak valid!';
+      requestBtn.disabled = true;
+      return;
+    }
+
+    generatedCodeString = `"${code}": "${url}",`;
+    outputCode.textContent = generatedCodeString;
+    requestBtn.disabled = false;
+  });
+
+  requestBtn.addEventListener('click', () => {
+    if (!generatedCodeString) return;
+
+    const phoneNumber = '6283190554763'; // format internasional untuk WA Indonesia (tanpa +)
+    const message = encodeURIComponent(generatedCodeString);
+    const waUrl = `https://wa.me/${phoneNumber}?text=${message}`;
+    window.open(waUrl, '_blank');
+  });
+</script>
+
+</body>
+</html>
