@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Produk List</title>
+<style>
+  :root {
+    --main-color: #e63946; /* merah utama */
+  }
+  body {
+    font-family: Arial, sans-serif;
+    padding: 10px;
+    background-color: #fff6f6;
+    color: #333;
+  }
+  .widget-container {
+    max-width: 480px;
+    margin: auto;
+    border: 2px solid var(--main-color);
+    border-radius: 8px;
+    padding: 15px;
+    background: white;
+  }
+  h2 {
+    color: var(--main-color);
+    text-align:center;
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  input[type="text"], input[type="url"] {
+    padding: 8px;
+    border: 2px solid var(--main-color);
+    border-radius: 5px;
+    font-size: 1em;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  button {
+    background-color: var(--main-color);
+    border: none;
+    color: white;
+    font-size: 1em;
+    font-weight: bold;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  button:hover {
+    background-color: #b82a33;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+  }
+  th, td {
+    border: 1px solid var(--main-color);
+    padding: 8px;
+    text-align: left;
+  }
+  th {
+    background-color: var(--main-color);
+    color: white;
+  }
+  a {
+    color: var(--main-color);
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+  /* Responsif */
+  @media (max-width: 500px) {
+    .widget-container {
+      padding: 10px;
+    }
+    th, td {
+      font-size: 0.9em;
+      padding: 6px;
+    }
+    button {
+      font-size: 0.9em;
+      padding: 8px;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="widget-container">
+  <h2>Input Produk</h2>
+  <form id="product-form">
+    <input type="text" id="product-name" placeholder="Nama Produk" required />
+    <input type="url" id="product-url" placeholder="URL Produk (https://...)" required />
+    <input type="text" id="product-code" placeholder="KODE (kode khusus)" required />
+    <button type="submit">Simpan</button>
+  </form>
+
+  <table id="product-table" aria-label="Tabel produk">
+    <thead>
+      <tr>
+        <th>Nama Produk</th>
+        <th>KODE</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Isi tabel akan dimuat di sini -->
+    </tbody>
+  </table>
+</div>
+
+<script>
+  const form = document.getElementById('product-form');
+  const tableBody = document.querySelector('#product-table tbody');
+
+  function renderTable() {
+    const storedData = JSON.parse(localStorage.getItem('produkData')) || [];
+    tableBody.innerHTML = '';
+    storedData.forEach(({name, url, code}) => {
+      const row = document.createElement('tr');
+      const nameCell = document.createElement('td');
+      const codeCell = document.createElement('td');
+
+      // Membuat link dengan anchor tag
+      const link = document.createElement('a');
+      link.href = url;
+      link.textContent = name;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      nameCell.appendChild(link);
+
+      codeCell.textContent = code;
+
+      row.appendChild(nameCell);
+      row.appendChild(codeCell);
+      tableBody.appendChild(row);
+    });
+  }
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = document.getElementById('product-name').value.trim();
+    const url = document.getElementById('product-url').value.trim();
+    const code = document.getElementById('product-code').value.trim();
+
+    if (!name || !url || !code) return; // validasi sederhana
+
+    const storedData = JSON.parse(localStorage.getItem('produkData')) || [];
+    storedData.push({name, url, code});
+
+    localStorage.setItem('produkData', JSON.stringify(storedData));
+
+    form.reset();
+    renderTable();
+  });
+
+  // Load data saat pertama kali halaman dibuka
+  renderTable();
+</script>
+</body>
+</html>
