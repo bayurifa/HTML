@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Form Order Sosial Media</title>
+<style>
+  :root {
+    --main-red: #e63946;
+    --main-red-dark: #a52727;
+  }
+  body {
+    font-family: Arial, sans-serif;
+    padding: 1rem;
+    margin: 0;
+    background: #fff;
+  }
+  .order-widget {
+    max-width: 400px;
+    margin: auto;
+    border: 2px solid var(--main-red);
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 2px 8px rgba(230, 57, 70, 0.3);
+    background: #fff;
+  }
+  .order-widget h2 {
+    color: var(--main-red);
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  label {
+    display: block;
+    margin: 12px 0 6px 0;
+    font-weight: bold;
+    color: var(--main-red-dark);
+  }
+  select, input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border: 1.5px solid var(--main-red);
+    border-radius: 4px;
+    font-size: 1rem;
+    box-sizing: border-box;
+  }
+  select:focus, input[type="text"]:focus {
+    outline: none;
+    border-color: var(--main-red-dark);
+    box-shadow: 0 0 5px var(--main-red);
+  }
+  .btn-claim {
+    width: 100%;
+    background-color: var(--main-red);
+    color: white;
+    border: none;
+    padding: 12px;
+    font-size: 1.1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 1.5rem;
+    transition: background-color 0.3s ease;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .btn-claim:hover {
+    background-color: var(--main-red-dark);
+  }
+  @media (max-width: 480px) {
+    .order-widget {
+      padding: 12px;
+      margin: 0 1rem;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="order-widget" role="form" aria-label="Form Order Social Media">
+  <h2>Order Engagement Sosial Media</h2>
+
+  <label for="social-media-select">Social Media</label>
+  <select id="social-media-select" name="social-media" required>
+    <option value="" disabled selected>Pilih Social Media</option>
+    <option value="instagram">Instagram</option>
+    <option value="tiktok">TikTok</option>
+    <option value="youtube">YouTube</option>
+  </select>
+
+  <label for="engagement-select">Engagement</label>
+  <select id="engagement-select" name="engagement" required>
+    <option value="" disabled selected>Pilih Engagement</option>
+    <option value="followers">Followers</option>
+    <option value="like">Like</option>
+    <option value="share">Share</option>
+    <option value="comment">Comment</option>
+    <option value="favorite">Favorite</option>
+    <option value="subscribe">Subscribe (YouTube)</option>
+  </select>
+
+  <label for="input-url">Input URL atau @username</label>
+  <input
+    type="text"
+    id="input-url"
+    name="input-url"
+    placeholder="Masukkan URL atau @username"
+    required
+    aria-describedby="help-url"
+  />
+  <small id="help-url" style="color: #555;">Contoh: https://instagram.com/username atau @username</small>
+
+  <a
+    href="#"
+    class="btn-claim"
+    id="btn-claim"
+    aria-label="Klaim dan Kirim ke WhatsApp"
+    >Klaim</a>
+</div>
+
+<script>
+  const btnClaim = document.getElementById('btn-claim');
+  btnClaim.addEventListener('click', function(event) {
+    event.preventDefault();
+
+    const socialMedia = document.getElementById('social-media-select').value;
+    const engagement = document.getElementById('engagement-select').value;
+    const inputUrl = document.getElementById('input-url').value.trim();
+
+    if (!socialMedia || !engagement || !inputUrl) {
+      alert('Mohon lengkapi semua bidang form terlebih dahulu.');
+      return;
+    }
+
+    const phoneNumber = '6283190554763'; // Nomor WhatsApp dengan kode negara Indonesia
+    const initialMessage = `Berikut informasi mengenai akun sosial saya:\nSocial Media: ${socialMedia}\nEngagement: ${engagement}\nURL/Username: ${inputUrl}`;
+    const encodedMessage = encodeURIComponent(initialMessage);
+
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+    window.open(whatsappUrl, '_blank');
+  });
+</script>
+
+</body>
+</html>
