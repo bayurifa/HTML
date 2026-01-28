@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BSRart - Stiker Lucu</title>
+
+    <!-- Google Font Lucu -->
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Baloo 2', cursive;
+            background: linear-gradient(135deg, #ffe0f0, #e0f7ff);
+            color: #333;
+            text-align: center;
+        }
+
+        header {
+            background: #ff6fa5;
+            color: white;
+            padding: 20px;
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            margin-top: 30px;
+            font-size: 36px;
+        }
+
+        .gratis {
+            font-size: 40px;
+            color: #ff3d7f;
+            margin: 10px 0 30px;
+            animation: goyang 1.2s infinite ease-in-out;
+            display: inline-block;
+        }
+
+        @keyframes goyang {
+            0% { transform: scale(1) rotate(0deg); }
+            25% { transform: scale(1.1) rotate(-3deg); }
+            50% { transform: scale(1.15) rotate(3deg); }
+            75% { transform: scale(1.1) rotate(-2deg); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+
+        .content {
+            max-width: 600px;
+            margin: auto;
+            padding: 0 20px 40px;
+            font-size: 18px;
+            line-height: 1.8;
+        }
+
+        .steps {
+            text-align: left;
+            margin-top: 15px;
+        }
+
+        .note {
+            margin-top: 25px;
+            font-size: 16px;
+            color: #555;
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 12px;
+        }
+
+        .btn-wa {
+            margin-top: 30px;
+            background: #25D366;
+            color: white;
+            font-size: 20px;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .btn-wa:hover {
+            transform: scale(1.08);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        footer {
+            background: #ff6fa5;
+            color: white;
+            padding: 15px;
+            margin-top: 40px;
+            font-size: 14px;
+        }
+
+        footer a {
+            color: white;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        BSRart
+    </header>
+
+    <h1>Ubah photo mu jadi stiker yang lucu!</h1>
+    <div class="gratis">GRATIS!!! 🎉</div>
+
+    <div class="content">
+        <div>Caranya? Gampang! Ikuti langkah-langkah berikut ini ya 😃</div>
+
+        <div class="steps">
+            1. Klik tombol <b>Mau Stiker</b> di bawah<br>
+            2. Anda akan dialihkan ke WhatsApp<br>
+            3. Lalu kirimkan photo wajah (close-up)<br>
+            4. Tunggu sampai stiker mu jadi ✨
+        </div>
+
+        <div class="note">
+            <b>Note*</b><br>
+            Estimasi pengerjaan tergantung antrian, jadi sabar ya ✨
+        </div>
+
+        <button class="btn-wa" onclick="kirimWhatsApp()">Mau Stiker 💖</button>
+    </div>
+
+    <footer>
+        Powered by 
+        <a href="https://www.bsrifa.com" target="_blank">BSRifa.com</a>
+    </footer>
+
+    <script>
+        function kirimWhatsApp() {
+            const nomor = "6283190554763"; // format internasional tanpa 0 depan
+            const pesan = "Hai BSRart aku mau dibuat kan Stiker nya 🥰";
+            const url = `https://wa.me/${nomor}?text=${encodeURIComponent(pesan)}`;
+            window.open(url, '_blank');
+        }
+    </script>
+
+</body>
+</html>
