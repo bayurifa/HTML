@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ILONA Boutique Hotel | Blessing Ramadhan </title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="manifest" href="manifest.json">
+<script id="site-data" type="application/json">
+{
+  "hotel": "ILONA Boutique Hotel",
+  "year": 2026,
+  "whatsapp": "628116874748",
+  "themeColor": "#d4af37"
+}
+</script>
+<script>
+const data = JSON.parse(
+  document.getElementById("site-data").textContent
+);
+
+console.log(data.hotel);
+</script>
+
+<style>
+:root{
+--navy:#0b1628;
+--gold:#d4af37;
+--soft:#f5e6b3;
+--glass:rgba(255,255,255,0.05);
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+background:radial-gradient(circle at top,var(--navy),#050d1a);
+font-family:'Poppins',sans-serif;
+color:white;
+overflow-x:hidden;
+}
+
+/* LOADING SCREEN */
+#loader{
+position:fixed;
+width:100%;
+height:100%;
+background:#000;
+display:flex;
+align-items:center;
+justify-content:center;
+z-index:9999;
+color:var(--gold);
+font-family:'Playfair Display';
+font-size:22px;
+letter-spacing:3px;
+animation:fadeOut 2s ease 3s forwards;
+}
+
+@keyframes fadeOut{
+to{opacity:0;visibility:hidden;}
+}
+
+/* Animated Moon */
+.moon{
+position:fixed;
+top:60px;
+right:40px;
+width:100px;
+height:100px;
+background:radial-gradient(circle,#fff,var(--gold));
+border-radius:50%;
+box-shadow:0 0 40px var(--gold);
+animation:float 6s ease-in-out infinite;
+}
+@keyframes float{
+0%,100%{transform:translateY(0);}
+50%{transform:translateY(-15px);}
+}
+
+/* Clouds */
+.cloud{
+position:fixed;
+width:200px;
+height:60px;
+background:rgba(255,255,255,0.05);
+border-radius:50px;
+filter:blur(10px);
+animation:moveCloud 40s linear infinite;
+}
+@keyframes moveCloud{
+from{left:-200px;}
+to{left:110%;}
+}
+
+/* Header */
+header{
+text-align:center;
+padding:80px 20px 20px;
+font-family:'Playfair Display';
+font-size:26px;
+color:var(--gold);
+}
+
+/* Glass Card */
+.glass{
+background:var(--glass);
+backdrop-filter:blur(12px);
+border:1px solid rgba(255,255,255,0.1);
+border-radius:20px;
+margin:20px;
+padding:20px;
+text-align:center;
+}
+
+/* Poster */
+.poster{
+width:100%;
+max-width:520px;
+border-radius:15px;
+cursor:pointer;
+box-shadow:0 0 40px rgba(212,175,55,0.4);
+transition:0.4s;
+}
+.poster:hover{transform:scale(1.03);}
+
+/* Golden Shimmer Button */
+.cta{
+display:inline-block;
+margin-top:20px;
+padding:15px 35px;
+border-radius:50px;
+font-weight:600;
+color:#000;
+background:linear-gradient(90deg,var(--gold),var(--soft),var(--gold));
+background-size:200% auto;
+animation:shine 3s linear infinite;
+text-decoration:none;
+}
+@keyframes shine{
+to{background-position:200% center;}
+}
+
+/* Sparkle */
+canvas{
+position:fixed;
+top:0;
+left:0;
+pointer-events:none;
+}
+
+/* GRID GALLERY */
+.grid-gallery{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:15px;
+}
+
+.grid-img{
+width:100%;
+border-radius:15px;
+cursor:pointer;
+transition:0.4s;
+box-shadow:0 0 15px rgba(212,175,55,0.3);
+}
+
+.grid-img:hover{
+transform:scale(1.05);
+box-shadow:0 0 25px rgba(212,175,55,0.6);
+}
+
+/* Responsive */
+@media(max-width:500px){
+.grid-gallery{
+gap:10px;
+}
+}
+
+
+/* Footer */
+footer{
+text-align:center;
+padding:30px 10px;
+font-size:12px;
+color:var(--soft);
+}
+
+/* Modal */
+.modal{
+display:none;
+position:fixed;
+z-index:999;
+background:rgba(0,0,0,0.95);
+width:100%;
+height:100%;
+}
+.modal img{
+display:block;
+margin:auto;
+max-width:95%;
+margin-top:40px;
+transition:transform 0.2s;
+}
+.close{
+position:absolute;
+top:20px;
+right:30px;
+font-size:30px;
+cursor:pointer;
+}
+
+/* Music Button */
+.music{
+position:fixed;
+bottom:20px;
+right:20px;
+background:var(--gold);
+border:none;
+width:55px;
+height:55px;
+border-radius:50%;
+font-size:22px;
+cursor:pointer;
+box-shadow:0 0 20px var(--gold);
+}
+</style>
+</head>
+
+<body oncontextmenu="return false">
+
+<div id="loader">RAMADHAN EXPERIENCE</div>
+
+<div class="moon"></div>
+<div class="cloud" style="top:120px;"></div>
+<div class="cloud" style="top:200px; animation-duration:60s;"></div>
+
+<header>
+Blessing Ramadhan <br> ILONA Boutique Hotel
+</header>
+
+<div class="glass">
+<img src="https://github.com/bayurifa/Image/raw/refs/heads/main/IMG-20260203-WA0012.jpg" class="poster" id="poster">
+<br>
+<a class="cta" href="https://wa.me/628116874748?text=Halo%20ILONA,%20saya%20ingin%20reservasi%20Paket%20Berbuka." target="_blank">
+Reservasi Sekarang
+</a>
+</div>
+
+<!-- Image Grid 2x2 -->
+<div class="glass">
+  <h3 style="color:var(--gold);margin-bottom:15px;font-family:'Playfair Display';">
+    Hagya Coffee & Resto
+  </h3>
+
+  <div class="grid-gallery">
+    <img src="https://github.com/bayurifa/Image/raw/refs/heads/main/ChatGPT%20Image%2012%20Feb%202026,%2015.13.04.png" class="grid-img">
+    <img src="https://github.com/bayurifa/Image/raw/refs/heads/main/IMG-20251027-WA0054.jpg" class="grid-img">
+    <img src="https://github.com/bayurifa/Image/raw/refs/heads/main/IMG-20251027-WA0062.jpg" class="grid-img">
+    <img src="https://github.com/bayurifa/Image/raw/refs/heads/main/IMG-20251027-WA0063.jpg" class="grid-img">
+  </div>
+</div>
+
+
+<footer>
+©2026 ILONA Boutique Hotel | HAGYA Coffee and Resto
+</footer>
+
+<button class="music" id="musicBtn">🎵</button>
+
+<audio id="bgMusic" loop>
+<source src="https://github.com/bayurifa/Music/raw/refs/heads/main/Iftar%20Background%20Music%20%F0%9F%8C%99%20Soothing%20Islamic%20Instrumental%20for%20Ramadan(MP3_160K).mp3" type="audio/mpeg">
+</audio>
+
+<div id="modal" class="modal">
+<span class="close">&times;</span>
+<img id="modalImg">
+</div>
+
+<canvas id="sparkle"></canvas>
+
+<script>
+// Sparkle Particle System
+const canvas=document.getElementById("sparkle");
+const ctx=canvas.getContext("2d");
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+let particles=[];
+for(let i=0;i<80;i++){
+particles.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*2});
+}
+function draw(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+ctx.fillStyle="#d4af37";
+particles.forEach(p=>{
+ctx.beginPath();
+ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+ctx.fill();
+p.y+=0.5;
+if(p.y>canvas.height)p.y=0;
+});
+requestAnimationFrame(draw);
+}
+draw();
+
+// Modal Zoom
+let modal=document.getElementById("modal");
+let img=document.getElementById("poster");
+let modalImg=document.getElementById("modalImg");
+let zoom=1;
+img.onclick=()=>{modal.style.display="block";modalImg.src=img.src;}
+document.querySelector(".close").onclick=()=>{modal.style.display="none";zoom=1;modalImg.style.transform="scale(1)";}
+modalImg.addEventListener("wheel",(e)=>{
+e.preventDefault();
+zoom+=e.deltaY*-0.001;
+zoom=Math.min(Math.max(.5,zoom),4);
+modalImg.style.transform=`scale(${zoom})`;
+});
+
+// Music
+let music=document.getElementById("bgMusic");
+let btn=document.getElementById("musicBtn");
+btn.onclick=()=>{
+if(music.paused){music.play();btn.innerHTML="🔊";}
+else{music.pause();btn.innerHTML="🎵";}
+}
+document.addEventListener("click",()=>music.play());
+
+// Anti Inspect
+document.onkeydown=function(e){
+if(e.keyCode==123) return false;
+if(e.ctrlKey && e.shiftKey && e.keyCode==73) return false;
+}
+</script>
+
+</body>
+</html>
