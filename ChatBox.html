@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checking.AI</title>
+
+<style>
+:root{
+  --violet:#7c3aed;
+  --violet-soft:#a78bfa;
+  --white:#ffffff;
+  --bg:#f5f3ff;
+  --danger:#ff4d6d;
+}
+
+body{
+  margin:0;
+  font-family: "Segoe UI", monospace;
+  background: linear-gradient(180deg, #ede9fe, #f5f3ff);
+  display:flex;
+  flex-direction:column;
+  height:100vh;
+}
+
+/* Header */
+header{
+  text-align:center;
+  padding:18px;
+  font-size:24px;
+  font-weight:bold;
+  color:var(--violet);
+  background:white;
+  box-shadow:0 2px 10px rgba(124,58,237,.15);
+}
+
+.note{
+  text-align:center;
+  font-size:12px;
+  color:var(--danger);
+  margin:5px 10px;
+}
+
+/* Chat Container */
+.chat-container{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  max-width:600px;
+  width:95%;
+  margin:auto;
+  background:white;
+  border-radius:18px;
+  box-shadow:0 10px 30px rgba(124,58,237,.15);
+  overflow:hidden;
+}
+
+/* Chat Box */
+.chat-box{
+  flex:1;
+  padding:15px;
+  overflow-y:auto;
+  background:var(--bg);
+}
+
+/* Message Bubble */
+.message{
+  margin:10px 0;
+  display:flex;
+}
+
+.user{
+  justify-content:flex-end;
+}
+
+.bot{
+  justify-content:flex-start;
+}
+
+.bubble{
+  max-width:75%;
+  padding:10px 14px;
+  border-radius:16px;
+  font-size:14px;
+  line-height:1.4;
+  position:relative;
+  animation: pop .2s ease;
+}
+
+/* Bubble colors */
+.user .bubble{
+  background:var(--violet);
+  color:white;
+  border-bottom-right-radius:4px;
+}
+
+.bot .bubble{
+  background:#ede9fe;
+  color:#4c1d95;
+  border-bottom-left-radius:4px;
+}
+
+/* Input */
+.input-area{
+  display:flex;
+  border-top:1px solid #ddd;
+}
+
+input{
+  flex:1;
+  padding:14px;
+  border:none;
+  outline:none;
+  font-size:14px;
+}
+
+button{
+  background:var(--violet);
+  color:white;
+  border:none;
+  padding:14px 18px;
+  cursor:pointer;
+  transition:.25s;
+}
+
+button:hover{
+  background:#6d28d9;
+  transform:scale(1.05);
+}
+
+/* Footer */
+footer{
+  text-align:center;
+  padding:10px;
+  font-size:12px;
+  color:#6b7280;
+}
+
+/* Emoji Animation */
+.emoji{
+  display:inline-block;
+  animation:bounce 1s infinite alternate;
+}
+
+@keyframes bounce{
+  from{ transform: translateY(0px);}
+  to{ transform: translateY(-4px);}
+}
+
+/* Bubble pop animation */
+@keyframes pop{
+  from{ transform:scale(.8); opacity:0;}
+  to{ transform:scale(1); opacity:1;}
+}
+
+/* Typing cursor */
+.cursor{
+  display:inline-block;
+  width:8px;
+  height:14px;
+  background:var(--violet);
+  margin-left:4px;
+  animation:blink 1s infinite;
+}
+
+@keyframes blink{
+  0%,50%,100%{opacity:1;}
+  25%,75%{opacity:0;}
+}
+
+@media(max-width:500px){
+  header{font-size:18px;}
+  .chat-container{width:100%; border-radius:0;}
+}
+</style>
+</head>
+
+<body>
+
+<header>🤖 Checking.AI</header>
+<div class="note">
+  coba cek nama kamu apakah terdaftar?<br>
+  note* penulisan tanpa huruf kapital dan spasi/hanya nama panggilan
+</div>
+
+<div class="chat-container">
+  <div id="chatBox" class="chat-box"></div>
+
+  <div class="input-area">
+    <input id="commandInput" type="text" placeholder="ketik nama...">
+    <button onclick="sendCommand()">Send</button>
+  </div>
+</div>
+
+<footer>©2026 BSR Official</footer>
+
+<script>
+const data = {
+  "andi": "Wah anda terlihat cukup keren dan terlalu Cool 🥶",
+  "wahyu": "maaf saya terlalu sulit untuk memahami \"wahyu\" bahkan lebih sulit daripada harus memahami kode kode yang diberikan oleh wanita",
+  "alif": "terlihat sedikit handsome tapi minus nya agak sedikit seperti \"Wahyu\"",
+  "lailul": "Sepertinya dia warga prindapan yang tinggal di Aceh",
+  "abdul": "dia adalah PENDEKAR PENdek tapi keKAR 🔥",
+  "arifan": "maaf data penduduk Blang Bintang tidak terdaftar...",
+  "maimun": "botol Yakult versi MALE tapi minusnya suka cewe TOBRUT",
+  "bayu": "sosok MC yang dikenal dengan Lucifer Angel ✨ terlalu setia untuk dimiliki tapi mustahil untuk kalian dapatkan 🐊",
+  "meilan": "botol Yakult asli tapi 🤏🏻 lebih Manis 😝",
+  "yana": "kelihatan sombong tapi jika sudah lama kenal pasti lebih Asik orangnya 😄",
+  "fitri": "cantik dengan 🤏🏻 paduan manis ditambah BURONAN para Buaya 🐊, sepertinya kamu harus lebih waspada ya 😂"
+};
+
+function animateEmoji(text){
+  return text.replace(/([\u{1F300}-\u{1FAFF}])/gu, '<span class="emoji">$1</span>');
+}
+
+function addMessage(sender, text){
+  const chat = document.getElementById("chatBox");
+  const wrapper = document.createElement("div");
+  wrapper.className = "message " + sender;
+
+  const bubble = document.createElement("div");
+  bubble.className = "bubble";
+  bubble.innerHTML = animateEmoji(text);
+
+  wrapper.appendChild(bubble);
+  chat.appendChild(wrapper);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function typeBotMessage(text){
+  const chat = document.getElementById("chatBox");
+  const wrapper = document.createElement("div");
+  wrapper.className = "message bot";
+
+  const bubble = document.createElement("div");
+  bubble.className = "bubble";
+  wrapper.appendChild(bubble);
+
+  chat.appendChild(wrapper);
+
+  let i = 0;
+  const cursor = document.createElement("span");
+  cursor.className = "cursor";
+  bubble.appendChild(cursor);
+
+  const interval = setInterval(()=>{
+    bubble.innerHTML = animateEmoji(text.slice(0, i+1));
+    bubble.appendChild(cursor);
+    i++;
+    chat.scrollTop = chat.scrollHeight;
+
+    if(i === text.length){
+      clearInterval(interval);
+      cursor.remove();
+    }
+  }, 18);
+}
+
+function sendCommand(){
+  const input = document.getElementById("commandInput");
+  const command = input.value.trim().toLowerCase();
+  if(!command) return;
+
+  addMessage("user", command);
+
+  let response;
+
+  if(command === "help"){
+    response = "nama terdaftar: " + Object.keys(data).join(", ");
+  }
+  else if(data[command]){
+    response = data[command];
+  }
+  else{
+    response = "nama tidak ditemukan, ketik help untuk daftar.";
+  }
+
+  setTimeout(()=> typeBotMessage(response), 300);
+  input.value="";
+}
+
+document.getElementById("commandInput")
+  .addEventListener("keypress", e=>{
+    if(e.key==="Enter") sendCommand();
+  });
+</script>
+
+</body>
+</html>
