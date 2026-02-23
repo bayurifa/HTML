@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BSRshop - YouTube Premium</title>
+
+  <style>
+    :root {
+      --primary: #25D366;
+      --secondary: #111;
+      --gray: #777;
+      --light: #f5f5f5;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #fff;
+      color: #111;
+      line-height: 1.5;
+    }
+
+    /* HEADER */
+    header {
+      background: var(--secondary);
+      color: white;
+      padding: 15px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 20px;
+      position: sticky;
+      top: 0;
+    }
+
+    /* PRODUCT IMAGE */
+    .product-img img {
+      width: 100%;
+      display: block;
+    }
+
+    /* CONTENT */
+    .container {
+      padding: 16px;
+    }
+
+    .title {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .price {
+      font-size: 22px;
+      color: #e53935;
+      font-weight: bold;
+    }
+
+    .offer {
+      color: var(--gray);
+      text-decoration: line-through;
+      margin-left: 10px;
+      font-size: 14px;
+    }
+
+    .box {
+      background: var(--light);
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 12px;
+    }
+
+    select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+      margin-top: 5px;
+    }
+
+    .stock {
+      margin-top: 5px;
+      font-size: 14px;
+      color: var(--gray);
+    }
+
+    .section-title {
+      font-weight: bold;
+      margin-top: 16px;
+      margin-bottom: 5px;
+    }
+
+    .desc {
+      font-size: 14px;
+      color: #333;
+    }
+
+    ul {
+      margin-left: 18px;
+      font-size: 14px;
+    }
+
+    /* CHECKOUT */
+    .checkout {
+      position: sticky;
+      bottom: 0;
+      background: white;
+      border-top: 1px solid #ddd;
+      padding: 12px;
+    }
+
+    .checkout button {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      background: var(--primary);
+      color: white;
+      font-size: 16px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .checkout button:hover {
+      opacity: 0.9;
+    }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      padding: 15px;
+      font-size: 13px;
+      color: var(--gray);
+      margin-top: 20px;
+    }
+
+    @media (min-width: 768px) {
+      .container {
+        max-width: 500px;
+        margin: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>BSRshop</header>
+
+  <!-- PRODUCT IMAGE -->
+  <div class="product-img">
+    <img src="https://github.com/bayurifa/Image/raw/refs/heads/main/ChatGPT%20Image%2023%20Feb%202026,%2013.46.01.png" alt="YouTube Premium">
+  </div>
+
+  <!-- CONTENT -->
+  <div class="container">
+    <div class="title">YouTube Premium</div>
+
+    <div>
+      <span class="price">Rp 69.000,00</span>
+      <span class="offer">Rp 207.000,00</span>
+    </div>
+
+    <div class="box">
+      <label>Variasi:</label>
+<select id="variant">
+  <option value="1 Bulan" disabled>1 Bulan (Tidak Tersedia)</option>
+  <option value="3 Bulan" selected>3 Bulan</option>
+  <option value="6 Bulan" disabled>6 Bulan (Tidak Tersedia)</option>
+</select>
+      <div class="stock">Stok: 5</div>
+    </div>
+
+    <div class="section-title">Deskripsi:</div>
+    <div class="desc">
+      YouTube Premium adalah layanan resmi dari YouTube yang memberikan pengalaman menonton tanpa iklan, pemutaran di latar belakang, dan akses ke YouTube Music. Cocok untuk penikmat video dan musik yang ingin menikmati konten tanpa gangguan.
+    </div>
+
+    <div class="section-title">Syarat dan ketentuan</div>
+    <ul>
+      <li>Wajib membaca deskripsi produk dengan teliti sebelum melakukan pembelian.</li>
+      <li>Produk yang sudah dibeli dan diproses tidak dapat dikembalikan (Non-Refundable).</li>
+      <li>Garansi berlaku penuh sesuai dengan durasi yang dipilih saat pembelian.</li>
+      <li>Untuk produk akun, dilarang mengubah data sensitif (Email/Password) kecuali diizinkan.</li>
+    </ul>
+  </div>
+
+  <!-- CHECKOUT -->
+  <div class="checkout">
+    <button onclick="checkoutWA()">Beli Sekarang</button>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>©2026 BSRshop</footer>
+
+  <script>
+    function checkoutWA() {
+      const phone = "6283190554763"; // nomor WhatsApp
+      const product = "YouTube Premium";
+      const variant = document.getElementById("variant").value;
+      const price = "Rp 69.000,00";
+      const discount = "Rp 138.000,00";
+
+      const message =
+`Halo BSRshop, saya ingin membeli:
+
+Nama Produk: ${product}
+Variasi: ${variant}
+Harga Produk: ${price}
+Potongan Harga: ${discount}
+
+Mohon diproses. Terima kasih.`;
+
+      const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+      window.open(url, "_blank");
+    }
+  </script>
+
+</body>
+</html>
