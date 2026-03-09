@@ -1,0 +1,21 @@
+{
+  "name": "Qasir.Ku",
+  "short_name": "Qasir",
+  "start_url": "https://m.bsrifa.com/p/qasirku.html",
+  "display": "standalone",
+  "background_color": "#fff",
+  "theme_color": "#fff",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://res.cloudinary.com/dtkpjvajf/image/upload/v1773018171/iej5mmsqkipnd2dts5nn.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://res.cloudinary.com/dtkpjvajf/image/upload/v1773018205/c1yclsy9dcn3plheggap.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
