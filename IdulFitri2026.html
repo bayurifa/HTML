@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Idul Fitri</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif}
+
+body{
+  background:#0f2027;
+  color:white;
+  overflow:hidden;
+}
+
+/* HEADER */
+.header{
+  position:fixed;
+  top:0;
+  width:100%;
+  background:#111;
+  padding:10px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  z-index:999;
+  font-size:14px;
+}
+.header button{
+  padding:5px 10px;
+  border:none;
+  border-radius:10px;
+  background:#ffd369;
+}
+
+/* STAR */
+.star{
+  position:absolute;
+  width:2px;
+  height:2px;
+  background:white;
+  animation:twinkle 2s infinite alternate;
+}
+@keyframes twinkle{
+  from{opacity:0.2;}
+  to{opacity:1;}
+}
+
+/* ENVELOPE */
+#envelope{
+  position:fixed;
+  width:200px;
+  height:140px;
+  background:#ffd369;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  border-radius:10px;
+  z-index:999;
+  color:#333;
+  transition:0.5s;
+}
+#envelope.open{
+  transform:translate(-50%,-200%) scale(0);
+  opacity:0;
+}
+
+/* MAIN */
+.container{
+  display:none;
+  padding:80px 20px;
+  text-align:center;
+}
+.card{
+  background:rgba(255,255,255,0.1);
+  padding:25px;
+  border-radius:20px;
+}
+button{
+  padding:10px 20px;
+  border:none;
+  border-radius:20px;
+  background:#ffd369;
+  margin-top:10px;
+}
+
+/* MODAL */
+.modal{
+  position:fixed;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.8);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:999;
+}
+.box{
+  background:#1b262c;
+  padding:20px;
+  border-radius:10px;
+  width:90%;
+  max-width:350px;
+}
+input, textarea{
+  width:100%;
+  padding:10px;
+  margin-top:10px;
+  border-radius:8px;
+  border:none;
+}
+.hidden{display:none}
+
+/* TOAST */
+.toast{
+  position:fixed;
+  bottom:20px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#333;
+  padding:10px 20px;
+  border-radius:20px;
+  opacity:0;
+  transition:0.5s;
+  z-index:9999;
+}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div>💰 Saldo: Rp <span id="saldo">0</span></div>
+  <button onclick="tarik()">Tarik</button>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- STAR -->
+<script>
+for(let i=0;i<120;i++){
+  let s=document.createElement("div");
+  s.className="star";
+  s.style.top=Math.random()*100+"%";
+  s.style.left=Math.random()*100+"%";
+  document.body.appendChild(s);
+}
+</script>
+
+<!-- ENVELOPE -->
+<div id="envelope" onclick="openEnvelope()">📩 Buka Ucapan</div>
+
+<!-- AUDIO -->
+<audio id="music" loop>
+<source src="https://github.com/bayurifa/Music/raw/refs/heads/main/Iftar%20Background%20Music%20%F0%9F%8C%99%20Soothing%20Islamic%20Instrumental%20for%20Ramadan(MP3_160K).mp3">
+</audio>
+
+<!-- MODAL -->
+<div class="modal hidden" id="modalNama">
+  <div class="box">
+    <h3>Masukkan Nama</h3>
+    <input type="text" id="nama">
+    <button onclick="start()">Lanjut</button>
+  </div>
+</div>
+
+<div class="modal hidden" id="modalAlert">
+  <div class="box">
+    <p id="alertText"></p>
+    <button onclick="closeAlert()">OK</button>
+  </div>
+</div>
+
+<div class="modal hidden" id="modalBalas">
+  <div class="box">
+    <textarea id="pesan"></textarea>
+    <button onclick="kirimWA()">Kirim</button>
+  </div>
+</div>
+
+<div class="modal hidden" id="modalGacha">
+  <div class="box">
+    <h3>🎁 Undian THR</h3>
+    <p id="gachaText">Klik untuk mencoba keberuntunganmu!</p>
+    <button id="btnGacha" onclick="rollGacha()">Gacha</button>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="container" id="main">
+  <div class="card">
+    <h1>Selamat Idul Fitri 🌙</h1>
+
+    <p id="textNama"></p>
+
+    <button onclick="openBalas()">Balas</button>
+    <button onclick="shareLink()">Share</button>
+    <button onclick="openGacha()">🎁 Ambil THR</button>
+  </div>
+</div>
+
+<script>
+let nama="";
+let saldo=0;
+let isRolling=false;
+
+/* TOAST */
+function showToast(msg){
+  let t=document.getElementById("toast");
+  t.innerText=msg;
+  t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"),3000);
+}
+
+/* TARIK */
+function tarik(){
+  showToast("Minimal melakukan Pay-Out Rp 1.000.000");
+}
+
+/* ENVELOPE */
+function openEnvelope(){
+  document.getElementById("envelope").classList.add("open");
+  setTimeout(()=>{
+    document.getElementById("modalNama").classList.remove("hidden");
+  },500);
+}
+
+/* ALERT */
+function showAlert(msg){
+  document.getElementById("alertText").innerText=msg;
+  document.getElementById("modalAlert").classList.remove("hidden");
+}
+function closeAlert(){
+  document.getElementById("modalAlert").classList.add("hidden");
+}
+
+/* START */
+function start(){
+  nama=document.getElementById("nama").value;
+
+  if(nama.trim()==""){
+    showAlert("Nama wajib diisi!");
+    return;
+  }
+
+  document.getElementById("modalNama").classList.add("hidden");
+  document.getElementById("main").style.display="block";
+
+  let ucapan=[
+    `Untuk <b>${nama}</b>, di hari yang suci ini, izinkan saya memohon maaf lahir dan batin. Semoga kebahagiaan dan keberkahan selalu menyertaimu ✨`,
+    `${nama}, semoga Idul Fitri ini membawa kedamaian, rezeki melimpah, dan hati yang bersih 🌙`,
+    `Selamat Idul Fitri <b>${nama}</b>, semoga semua doa dan harapanmu dikabulkan di hari kemenangan ini 🤲`
+  ];
+
+  document.getElementById("textNama").innerHTML=
+  ucapan[Math.floor(Math.random()*ucapan.length)];
+
+  document.getElementById("music").play();
+}
+
+/* GACHA */
+const rewards=[
+{amount:100000, chance:0.01},
+{amount:50000, chance:0.01},
+{amount:20000, chance:0.02},
+{amount:10000, chance:0.02},
+{amount:5000, chance:0.02},
+{amount:2000, chance:0.07},
+{amount:1000, chance:0.10},
+{amount:500, chance:2},
+{amount:200, chance:3},
+{amount:100, chance:5}
+];
+
+function openGacha(){
+  if(localStorage.getItem("thr_claimed")){
+    showAlert("Sudah ambil THR 😄");
+    return;
+  }
+  document.getElementById("modalGacha").classList.remove("hidden");
+}
+
+function rollGacha(){
+  if(isRolling)return;
+  if(localStorage.getItem("thr_claimed")) return;
+
+  isRolling=true;
+
+  let rand=Math.random()*100;
+  let cumulative=0;
+  let result=0;
+
+  for(let r of rewards){
+    cumulative+=r.chance;
+    if(rand<=cumulative){
+      result=r.amount;
+      break;
+    }
+  }
+
+  localStorage.setItem("thr_claimed","true");
+
+  setTimeout(()=>{
+    if(result>0){
+      saldo+=result;
+      document.getElementById("saldo").innerText=saldo.toLocaleString();
+      document.getElementById("gachaText").innerHTML=`🎉 Kamu dapat Rp ${result.toLocaleString()}`;
+      showToast("Saldo bertambah!");
+    }else{
+      document.getElementById("gachaText").innerHTML="😢 Belum beruntung";
+    }
+
+    document.getElementById("btnGacha").disabled=true;
+    isRolling=false;
+
+  },1500);
+}
+
+/* FAKE WINNER TOAST */
+const fakeNames=["Andi","Budi","Siti","Rina","Dewi","Agus","Icut","Pricilia","Ramadhan","Arya","Mutia","Balqis","Miraa"];
+setInterval(()=>{
+  let name=fakeNames[Math.floor(Math.random()*fakeNames.length)];
+  let amount=[100000,50000,20000,10000][Math.floor(Math.random()*4)];
+  showToast(`${name} baru saja mendapatkan Rp ${amount.toLocaleString()} 🎉`);
+},5000);
+
+/* SHARE */
+function shareLink(){
+  let link=window.location.href+"?to="+nama;
+  navigator.clipboard.writeText(link);
+  showToast("Link disalin!");
+}
+
+/* WA */
+function openBalas(){
+  document.getElementById("modalBalas").classList.remove("hidden");
+}
+function kirimWA(){
+  let pesan=document.getElementById("pesan").value;
+  let url=`https://wa.me/6283190554763?text=Halo Bayu, saya ${nama}%0A${encodeURIComponent(pesan)}`;
+  window.open(url,"_blank");
+}
+</script>
+
+</body>
+</html>
