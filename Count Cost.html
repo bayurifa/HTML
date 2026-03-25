@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Food Cost by BSrifa</title>
+
+<style>
+*{box-sizing:border-box}
+body{font-family:Arial;background:#f4f6f9;padding:10px}
+.container{max-width:1000px;margin:auto;background:#fff;padding:15px;border-radius:10px}
+h2,h3{text-align:center}
+
+select,input,button{
+  padding:6px;
+  border-radius:5px;
+  border:1px solid #ccc;
+}
+
+button{cursor:pointer}
+
+.btn{background:#3498db;color:#fff;border:none}
+.btn-danger{background:#e74c3c;color:#fff}
+.btn-success{background:#27ae60;color:#fff}
+
+.table-wrapper{overflow-x:auto}
+
+table{width:100%;border-collapse:collapse;margin-top:10px}
+th,td{border:1px solid #ddd;padding:8px;text-align:center}
+th{background:#2c3e50;color:#fff}
+
+.summary td{text-align:left;padding:8px}
+
+@media(max-width:600px){
+  table{font-size:12px}
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Food Cost Ultimate</h2>
+
+<!-- MENU -->
+<select id="menuSelect" onchange="gantiMenu()">
+  <option value="A">Paket A</option>
+  <option value="B">Paket B</option>
+  <option value="C">Paket C</option>
+  <option value="D">Paket D</option>
+  <option value="E">Paket E</option>
+</select>
+
+<div class="table-wrapper">
+<table id="tabel">
+<thead>
+<tr>
+<th>No</th><th>Nama</th><th>Harga</th><th>Qty</th><th>Total</th><th>Aksi</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+</div>
+
+<br>
+<button class="btn-success" onclick="tambahBaris()">+ Tambah</button>
+<button class="btn-success" onclick="saveData()">💾 Save Paket</button>
+<button class="btn" onclick="exportExcel()">Export Excel</button>
+<button class="btn" onclick="printInvoice()">Print</button>
+
+<div class="summary">
+<h3>Ringkasan</h3>
+
+<table>
+<tr><td>Grand Total</td><td id="grandTotal">Rp 0</td></tr>
+
+<tr>
+<td>PAX</td>
+<td><input type="number" id="pax" value="1" oninput="hitungSemua()"></td>
+</tr>
+
+<tr><td>HPP / Pax</td><td id="hppPax">Rp 0</td></tr>
+
+<tr>
+<td>Margin %</td>
+<td><input type="number" id="margin" value="0" oninput="hitungSemua()"></td>
+</tr>
+
+<tr><td>Selling / Pax</td><td id="selling">Rp 0</td></tr>
+<tr><td>Total Jual</td><td id="jual">Rp 0</td></tr>
+<tr><td>Profit</td><td id="profit">Rp 0</td></tr>
+<tr><td>Profit %</td><td id="profitPersen">0%</td></tr>
+</table>
+
+</div>
+
+</div>
+
+<script>
+let no=1;
+let currentMenu="A";
+
+function formatRupiah(a){
+ return "Rp "+Math.round(a).toLocaleString("id-ID");
+}
+
+function formatInput(input){
+ let n=input.value.replace(/\D/g,"");
+ input.value=n?parseInt(n).toLocaleString("id-ID"):"";
+}
+
+function tambahBaris(){
+ let tbody=document.querySelector("#tabel tbody");
+ let row=document.createElement("tr");
+
+ row.innerHTML=`
+ <td>${no++}</td>
+ <td><input></td>
+ <td><input class="harga" oninput="formatInput(this);hitung(this)"></td>
+ <td><input type="number" class="qty" oninput="hitung(this)"></td>
+ <td class="total">Rp 0</td>
+ <td><button class="btn-danger" onclick="hapus(this)">X</button></td>
+ `;
+
+ tbody.appendChild(row);
+}
+
+function hitung(el){
+ let row=el.closest("tr");
+ let harga=row.querySelector(".harga").value.replace(/\D/g,"");
+ let qty=row.querySelector(".qty").value;
+
+ harga=parseInt(harga)||0;
+ qty=parseInt(qty)||0;
+
+ let total=harga*qty;
+ row.querySelector(".total").innerText=formatRupiah(total);
+
+ hitungSemua();
+}
+
+function hapus(btn){
+ btn.closest("tr").remove();
+ updateNo();
+ hitungSemua();
+}
+
+function updateNo(){
+ let rows=document.querySelectorAll("#tabel tbody tr");
+ no=1;
+ rows.forEach(r=>r.children[0].innerText=no++);
+}
+
+function hitungSemua(){
+ let total=0;
+
+ document.querySelectorAll(".total").forEach(td=>{
+  total+=parseInt(td.innerText.replace(/\D/g,""))||0;
+ });
+
+ document.getElementById("grandTotal").innerText=formatRupiah(total);
+
+ let pax=parseInt(document.getElementById("pax").value)||1;
+ let margin=parseFloat(document.getElementById("margin").value)||0;
+
+ let hppPax=total/pax;
+ let selling=hppPax+(hppPax*margin/100);
+ let jual=selling*pax;
+ let profit=jual-total;
+ let persen= total? (profit/total*100):0;
+
+ setText("hppPax",hppPax);
+ setText("selling",selling);
+ setText("jual",jual);
+ setText("profit",profit);
+ document.getElementById("profitPersen").innerText=persen.toFixed(1)+"%";
+}
+
+function setText(id,val){
+ document.getElementById(id).innerText=formatRupiah(val);
+}
+
+/* ===== SAVE MANUAL ===== */
+function saveData(){
+ let data={
+  rows:[],
+  pax:document.getElementById("pax").value,
+  margin:document.getElementById("margin").value
+ };
+
+ document.querySelectorAll("#tabel tbody tr").forEach(r=>{
+  data.rows.push({
+    nama:r.children[1].querySelector("input").value,
+    harga:r.querySelector(".harga").value,
+    qty:r.querySelector(".qty").value
+  });
+ });
+
+ localStorage.setItem("menu_"+currentMenu,JSON.stringify(data));
+
+ alert("✅ Paket "+currentMenu+" berhasil disimpan!");
+}
+
+/* ===== LOAD ===== */
+function loadData(){
+ let data=JSON.parse(localStorage.getItem("menu_"+currentMenu)||"{}");
+
+ document.querySelector("#tabel tbody").innerHTML="";
+ no=1;
+
+ if(data.rows){
+  data.rows.forEach(d=>{
+    tambahBaris();
+    let r=document.querySelector("#tabel tbody tr:last-child");
+    r.children[1].querySelector("input").value=d.nama;
+    r.querySelector(".harga").value=d.harga;
+    r.querySelector(".qty").value=d.qty;
+    hitung(r.querySelector(".qty"));
+  });
+ }
+
+ document.getElementById("pax").value=data.pax||1;
+ document.getElementById("margin").value=data.margin||0;
+ hitungSemua();
+}
+
+/* ===== SWITCH MENU ===== */
+function gantiMenu(){
+ currentMenu=document.getElementById("menuSelect").value;
+ loadData();
+}
+
+/* ===== EXPORT ===== */
+function exportExcel(){
+ let table=document.getElementById("tabel").outerHTML;
+ let blob=new Blob([table],{type:"application/vnd.ms-excel"});
+ let a=document.createElement("a");
+ a.href=URL.createObjectURL(blob);
+ a.download="foodcost_"+currentMenu+".xls";
+ a.click();
+}
+
+/* ===== PRINT ===== */
+function printInvoice(){
+ window.print();
+}
+
+/* INIT */
+tambahBaris();
+</script>
+
+</body>
+</html>
