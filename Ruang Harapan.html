@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruang Harapan</title>
+    
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-hover: #4338CA;
+            --bg-color: #F3F4F6;
+            --card-bg: #FFFFFF;
+            --text-main: #1F2937;
+            --text-muted: #6B7280;
+            --border: #E5E7EB;
+            --danger: #EF4444;
+            --danger-hover: #DC2626;
+            --success: #10B981;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* HEADER */
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: background 0.3s ease;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        header:hover {
+            background-color: var(--primary-hover);
+        }
+        header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        /* MAIN CONTAINER */
+        main {
+            flex: 1;
+            width: 100%;
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            main {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        /* CARDS */
+        .card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+        .card-title {
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary);
+        }
+
+        /* FORM */
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-group label {
+            display: block;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-muted);
+        }
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .form-control:focus {
+            border-color: var(--primary);
+        }
+        textarea.form-control {
+            resize: vertical;
+            min-height: 100px;
+        }
+        .btn {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        /* WIDGET ANIMATION */
+        .widget-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 200px;
+            text-align: center;
+            padding: 1rem;
+            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            border-radius: 8px;
+            font-style: italic;
+            font-size: 1.1rem;
+            color: var(--text-main);
+        }
+        .hope-text {
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+        }
+        .fade-out {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        .fade-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* FOOTER */
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--card-bg);
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            border-top: 1px solid var(--border);
+        }
+
+        /* MODALS (Custom Alert & Popup) */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 50; /* Z-Index dasar untuk modal umum */
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        /* Khusus untuk Konfirmasi Hapus Modal */
+        #confirmModal {
+            z-index: 100 !important; 
+        }
+
+        /* Khusus untuk Alert Modal agar berada di lapisan paling atas */
+        #alertModal {
+            z-index: 105 !important; 
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        .modal-content {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+        .modal-header {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+        
+        /* DATA LIST IN ADMIN MODAL */
+        #adminModalContent {
+            max-width: 600px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+        .data-item {
+            background: var(--bg-color);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border: 1px solid var(--border);
+        }
+        .data-item h4 { margin-bottom: 0.25rem; color: var(--primary); }
+        .data-item p { font-size: 0.875rem; color: var(--text-muted); margin-bottom: 0.5rem;}
+        .data-item .isi-harapan { font-size: 1rem; color: var(--text-main); font-style: italic;}
+
+        /* TOMBOL DELETE KUSTOM CSS */
+        .btn-delete {
+            background: none;
+            border: none;
+            color: var(--danger);
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        .btn-delete:hover {
+            color: var(--danger-hover);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header id="headerBtn">
+        <h1><i class="fa-solid fa-seedling"></i> Ruang Harapan</h1>
+        <small style="font-size: 0.7rem; font-weight: 300;">Ubah Harapan jadi Kenyataan <i class="fas fa-heart"></i></small>
+    </header>
+
+    <!-- MAIN -->
+    <main>
+        <!-- FORM SECTION -->
+        <div class="card">
+            <h2 class="card-title"><i class="fa-solid fa-pen-to-square"></i> Tulis Harapanmu</h2>
+            <form id="hopeForm">
+                <div class="form-group">
+                    <label for="nama"><i class="fa-solid fa-user"></i> Nama</label>
+                    <input type="text" id="nama" class="form-control" placeholder="Masukkan nama..." required>
+                </div>
+                <div class="form-group">
+                    <label for="gender"><i class="fa-solid fa-venus-mars"></i> Gender</label>
+                    <select id="gender" class="form-control" required>
+                        <option value="" disabled selected>Pilih Gender</option>
+                        <option value="Laki-laki">Laki-laki</option>
+                        <option value="Perempuan">Perempuan</option>
+                        <option value="Rahasia">Rahasia</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="birthday"><i class="fa-solid fa-calendar-days"></i> Tanggal Lahir</label>
+                    <input type="date" id="birthday" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="harapan"><i class="fa-solid fa-comment-dots"></i> Harapanmu</label>
+                    <textarea id="harapan" class="form-control" placeholder="Tulis harapan terbaikmu disini..." required></textarea>
+                </div>
+                <button type="submit" class="btn" id="btnSubmit">
+                    <i class="fa-solid fa-paper-plane"></i> Simpan Harapanmu
+                </button>
+            </form>
+        </div>
+
+        <!-- WIDGET SECTION -->
+        <div class="card">
+            <h2 class="card-title"><i class="fa-solid fa-quote-left"></i> Suara Harapan</h2>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem;">
+                *Identitas disembunyikan untuk menjaga privasi.
+            </p>
+            <div class="widget-container">
+                <div id="widgetText" class="hope-text fade-in">
+                    Memuat harapan...
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>&copy; 2026 Ruang Harapan. Dibuat dengan <i class="fa-solid fa-heart" style="color: var(--danger)"></i></p>
+    </footer>
+
+    <!-- CUSTOM ALERT MODAL -->
+    <div class="modal-overlay" id="alertModal">
+        <div class="modal-content text-center" style="text-align: center;">
+            <div class="modal-header" id="alertTitle"><i class="fa-solid fa-bell"></i> Pemberitahuan</div>
+            <p id="alertMessage">Pesan alert di sini</p>
+            <button class="btn" style="margin-top: 1.5rem;" id="closeAlertBtn">Tutup</button>
+        </div>
+    </div>
+
+    <!-- PIN CONFIRMATION MODAL -->
+    <div class="modal-overlay" id="pinModal">
+        <div class="modal-content">
+            <button class="modal-close" id="closePinModal">&times;</button>
+            <div class="modal-header"><i class="fa-solid fa-shield-halved"></i> Kode Member</div>
+            <p style="font-size: 0.875rem; margin-bottom: 1rem; color: var(--text-muted);">Sudah bergabung menjadi Member?</p>
+            <input type="password" id="pinInput" class="form-control" placeholder="Kode Member..." style="margin-bottom: 1rem;">
+            <button class="btn" id="btnVerifyPin">Verifikasi</button>
+        </div>
+    </div>
+
+    <!-- CUSTOM CONFIRM HAPUS MODAL -->
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal-content text-center" style="text-align: center;">
+            <div class="modal-header"><i class="fa-solid fa-triangle-exclamation"></i> Konfirmasi Hapus</div>
+            <p style="margin-bottom: 1.5rem;">Apakah Anda yakin ingin menghapus data harapan ini?</p>
+            <div style="display: flex; gap: 1rem;">
+                <button class="btn" style="background-color: var(--text-muted);" id="cancelDeleteBtn">Batal</button>
+                <button class="btn" style="background-color: var(--danger);" id="confirmDeleteBtn"><i class="fa-solid fa-trash"></i> Hapus</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADMIN DATA VIEWER MODAL -->
+    <div class="modal-overlay" id="adminModal">
+        <div class="modal-content" id="adminModalContent">
+            <button class="modal-close" id="closeAdminModal">&times;</button>
+            <div class="modal-header"><i class="fa-solid fa-database"></i> Data Database Harapan</div>
+            <div id="dataContainer">
+                <!-- Data dari firebase akan di render disini -->
+            </div>
+        </div>
+    </div>
+
+    <!-- FIREBASE MODULE & LOGIC -->
+    <script type="module">
+        // Import Firebase - DI TAMBAH 'remove'
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+        import { getDatabase, ref, push, set, onValue, remove } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
+
+        // Konfigurasi Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDGiT1b19Vhi_qGc0iznXUOUjYcrUxFCDQ",
+            authDomain: "bsr-hope.firebaseapp.com",
+            databaseURL: "https://bsr-hope-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "bsr-hope",
+            storageBucket: "bsr-hope.firebasestorage.app",
+            messagingSenderId: "1004938172797",
+            appId: "1:1004938172797:web:24f910e64be8b5feb91414"
+        };
+
+        // Initialize Firebase & Database
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const harapanRef = ref(db, 'harapan_data');
+
+        // State Data
+        let allHopes = [];
+        const fallbackHopes = [
+            "Semoga esok hari membawa kebahagiaan yang tak terduga.",
+            "Semoga segala lelah menjadi lillah dan membuahkan hasil.",
+            "Berharap kedamaian selalu menyertai langkah kita semua.",
+            "Semoga kita semua diberikan kesehatan dan umur yang berkah."
+        ];
+
+        // --- SISTEM CUSTOM ALERT ---
+        const alertModal = document.getElementById('alertModal');
+        const alertMessage = document.getElementById('alertMessage');
+        const closeAlertBtn = document.getElementById('closeAlertBtn');
+
+        function showCustomAlert(msg) {
+            alertMessage.innerText = msg;
+            alertModal.classList.add('active');
+        }
+        closeAlertBtn.addEventListener('click', () => alertModal.classList.remove('active'));
+
+
+        // --- LOGIKA SIMPAN FORM KE FIREBASE ---
+        const hopeForm = document.getElementById('hopeForm');
+        const btnSubmit = document.getElementById('btnSubmit');
+
+        hopeForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const nama = document.getElementById('nama').value;
+            const gender = document.getElementById('gender').value;
+            const birthday = document.getElementById('birthday').value;
+            const harapan = document.getElementById('harapan').value;
+
+            // Loading state
+            btnSubmit.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...`;
+            btnSubmit.disabled = true;
+
+            try {
+                const newDataRef = push(harapanRef);
+                await set(newDataRef, {
+                    nama: nama,
+                    gender: gender,
+                    birthday: birthday,
+                    harapan: harapan,
+                    timestamp: Date.now()
+                });
+                
+                showCustomAlert("Harapanmu berhasil disimpan di alam semesta!");
+                hopeForm.reset();
+            } catch (error) {
+                showCustomAlert("Terjadi kesalahan: " + error.message);
+            } finally {
+                btnSubmit.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Simpan Harapanmu`;
+                btnSubmit.disabled = false;
+            }
+        });
+
+
+        // --- LOGIKA MENGAMBIL DATA FIREBASE SECARA REALTIME ---
+        onValue(harapanRef, (snapshot) => {
+            allHopes = [];
+            const data = snapshot.val();
+            if (data) {
+                // Merubah Object ke Array sekalian menyimpan key unik firebase (id)
+                for (let key in data) {
+                    allHopes.push({ id: key, ...data[key] });
+                }
+            }
+            
+            // Auto Update list ketika sedang buka Modal Data Admin
+            if (document.getElementById('adminModal').classList.contains('active')) {
+                renderAdminData();
+            }
+        });
+
+
+        // --- LOGIKA WIDGET ANIMASI RANDOM ---
+        const widgetText = document.getElementById('widgetText');
+        
+        function updateWidget() {
+            // Animasi Out
+            widgetText.classList.remove('fade-in');
+            widgetText.classList.add('fade-out');
+
+            setTimeout(() => {
+                let textToDisplay = "";
+                
+                if (allHopes.length > 0) {
+                    const randomIdx = Math.floor(Math.random() * allHopes.length);
+                    textToDisplay = allHopes[randomIdx].harapan; 
+                } else {
+                    const randomIdx = Math.floor(Math.random() * fallbackHopes.length);
+                    textToDisplay = fallbackHopes[randomIdx];
+                }
+
+                widgetText.innerText = `"${textToDisplay}"`;
+
+                // Animasi In
+                widgetText.classList.remove('fade-out');
+                widgetText.classList.add('fade-in');
+            }, 500); 
+        }
+
+        setInterval(updateWidget, 5000);
+        updateWidget(); 
+
+
+        // --- LOGIKA MODAL HEADER & ADMIN (KODE 0711) ---
+        const headerBtn = document.getElementById('headerBtn');
+        const pinModal = document.getElementById('pinModal');
+        const closePinModal = document.getElementById('closePinModal');
+        const btnVerifyPin = document.getElementById('btnVerifyPin');
+        const pinInput = document.getElementById('pinInput');
+
+        const adminModal = document.getElementById('adminModal');
+        const closeAdminModal = document.getElementById('closeAdminModal');
+        const dataContainer = document.getElementById('dataContainer');
+
+        headerBtn.addEventListener('click', () => {
+            pinInput.value = "";
+            pinModal.classList.add('active');
+        });
+
+        closePinModal.addEventListener('click', () => {
+            pinModal.classList.remove('active');
+        });
+
+        btnVerifyPin.addEventListener('click', () => {
+            if (pinInput.value === "0711") {
+                pinModal.classList.remove('active');
+                renderAdminData();
+                adminModal.classList.add('active');
+            } else {
+                showCustomAlert("Kode Member salah! Akses ditolak.");
+                pinInput.value = "";
+                pinInput.focus();
+            }
+        });
+
+        function renderAdminData() {
+            if (allHopes.length === 0) {
+                dataContainer.innerHTML = `<p style="text-align:center; color:gray;">Belum ada data harapan yang tersimpan.</p>`;
+                return;
+            }
+
+            let htmlContent = "";
+            // Sort data dari yang terbaru
+            const sortedHopes = [...allHopes].sort((a, b) => b.timestamp - a.timestamp);
+
+            sortedHopes.forEach(item => {
+                htmlContent += `
+                    <div class="data-item">
+                        <div style="display: flex; justify-content: space-between; align-items: start;">
+                            <h4><i class="fa-solid fa-user"></i> ${item.nama}</h4>
+                            <button class="btn-delete" data-id="${item.id}" title="Hapus Harapan Ini">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                        <p>
+                            <i class=
